@@ -1,24 +1,30 @@
-// News.jsx
-
 import React, { useState, useEffect } from 'react';
 
 const News = () => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    // Function to fetch news articles from AP News API
-    const fetchNews = async () => {
+    const fetchArticles = async () => {
+      const apiKey = process.env.REACT_APP_APINEWSKEY;
+      const urls = [
+        `https://newsapi.org/v2/everything?q=Apple&from=2024-03-28&sortBy=popularity&apiKey=${apiKey}`,
+        `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`,
+        `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=${apiKey}`
+      ];
       try {
-        const response = await fetch('https://api.ap.org/v2/top-headlines?apiKey=YOUR_API_KEY');
-        const data = await response.json();
-        setArticles(data.articles);
+        const responses = await Promise.all(urls.map(url => fetch(url)));
+        const data = await Promise.all(responses.map(response => response.json()));
+    
+        // Assuming you want to combine all articles from different responses
+        const allArticles = data.flatMap(d => d.articles);
+        setArticles(allArticles);
       } catch (error) {
-        console.error('Error fetching news:', error);
+        console.error('Could not fetch articles:', error);
       }
     };
 
-    fetchNews();
-  }, []); // Empty dependency array to fetch data only once on component mount
+    fetchArticles();
+  }, []);
 
   return (
     <div>
@@ -26,7 +32,9 @@ const News = () => {
       <ul>
         {articles.map((article, index) => (
           <li key={index}>
-            <a href={article.url} target="_blank" rel="noopener noreferrer">{article.title}</a>
+            <a href={article.url} target="_blank" rel="noreferrer">
+              {article.title}
+            </a>
           </li>
         ))}
       </ul>

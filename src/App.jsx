@@ -6,6 +6,12 @@ import './css/App.css'; // Import the CSS file
 import News from './components/News';
 import Weather from './components/Weather';
 
+import './assets/weather-icons-master/css/weather-icons.min.css';
+import './assets/weather-icons-master/css/weather-icons-wind.css';
+import './assets/weather-icons-master/css/weather-icons-wind.min.css';
+import './assets/weather-icons-master/css/weather-icons.css';
+
+
 const App = () => {
   return (
     <div className="App">
