@@ -1,31 +1,73 @@
-/* App.css */
-
-/* Styles for the main App component */
-.App {
-  text-align: center;
-}
-
-/* Styles for the News component */
-.News {
-  margin-bottom: 20px;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #F5F5F5;
+  color: #333333;
+  margin: 0;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
 }
 
-/* Styles for the Weather component */
-.Weather {
-  font:;
-  margin-bottom: 20px;
+.layout-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.news-container {
+  flex: 2;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #5d83d0;
+  border-right: 2px solid #DDDDDD;
+  background-color: #c2c6d0;
+  color: #FFFFFF;
 }
 
-/* Additional styles */
+.weather-container {
+  flex: 1;
+  padding: 20px;
+  background-color: #FFA500;
+  color: #FFFFFF;
+}
+
 h2 {
-  color: #333;
+  color: #FFFFFF;
+  margin-top: 0;
 }
 
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  border-bottom: 1px solid #DDDDDD;
+  padding: 10px 0;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+button, input[type="text"] {
+  padding: 10px;
+  border: 1px solid #DDDDDD;
+  background-color: #FFFFFF;
+  color: #333333;
+  margin-top: 10px;
+}
+
+button {
+  background-color: #008080;
+  color: #FFFFFF;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.error {
+  color: #FF0000;
+  margin-top: 10px;
+}

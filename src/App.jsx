@@ -1,31 +1,31 @@
-// App.jsx
-
-import React from 'react';
-import './css/App.css'; // Import the CSS file
-
+import React, { useState } from 'react';
 import News from './components/News';
 import Weather from './components/Weather';
+import './css/App.css';
 
 import './assets/weather-icons-master/css/weather-icons.min.css';
 import './assets/weather-icons-master/css/weather-icons-wind.css';
 import './assets/weather-icons-master/css/weather-icons-wind.min.css';
 import './assets/weather-icons-master/css/weather-icons.css';
 
+function App() {
+  const [selectedItem, setSelectedItem] = useState(null);
 
-const App = () => {
   return (
     <div className="App">
-      <h1>News and Weather App</h1>
-      <div className="News">
-        <h2>News</h2>
-        <News />
+      <div className="layout-container">
+        <div className="news-container">
+          <News onSelectItem={setSelectedItem} />
+        </div>
+        <div className="weather-container">
+          <Weather onSelectItem={setSelectedItem} />
+        </div>
       </div>
-      <div className="Weather">
-        <h2>Weather</h2>
-        <Weather />
+      <div className="details-section">
+        {selectedItem && <pre>{JSON.stringify(selectedItem, null, 2)}</pre>}
       </div>
     </div>
   );
-};
+}
 
 export default App;
