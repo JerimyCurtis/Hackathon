@@ -4,17 +4,17 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3030;
 
 // Load ZIP code data from JSON
-const zipCodeData = require('./data/US.json');
+const zipCodeData = require('../data/US.json');
 
 // API endpoint for ZIP code lookup
 app.get('/api/zip-to-coords', (req, res) => {
   const { zip } = req.query;
-  const entry = zipCodeData.find(entry => entry.zip === zip);
+  const entry = zipCodeData.find(entry => entry.PostalCode === zip); // Updated to use 'PostalCode'
   if (entry) {
-    const coords = { lat: entry.lat, lon: entry.lon };
+    const coords = { lat: parseFloat(entry.Latitude), lon: parseFloat(entry.Longitude) };
     console.log(`Sending coordinates for zip ${zip}:`, coords);
     res.json(coords);
   } else {
