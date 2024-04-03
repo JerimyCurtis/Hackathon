@@ -8,58 +8,60 @@ const Weather = () => {
 
   // Fetch weather by geolocation on component mount
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords;
-      fetchWeatherData(latitude, longitude);
-    }, () => {
-      setError('Geolocation not available. Please enter a zip code for weather data.');
-    });
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        fetchWeatherDataByCoords(latitude, longitude);
+      },
+      () => {
+        setError('Geolocation not available. Please enter a zip code.');
+      }
+    );
   }, []);
 
-  const fetchWeatherData = async (latitude, longitude) => {
+  const fetchWeatherDataByCoords = async (latitude, longitude) => {
     try {
-      // Step 1: Retrieve the gridpoint URL for the given latitude and longitude
       const pointsResponse = await fetch(`https://api.weather.gov/points/${latitude.toFixed(4)},${longitude.toFixed(4)}`);
       const pointsData = await pointsResponse.json();
-      
-      // Step 2: Use the forecast URL from the points data to fetch the weather forecast
-      const forecastResponse = await fetch(pointsData.properties.forecast);
+      const forecastUrl = pointsData.properties.forecast;
+      const forecastResponse = await fetch(forecastUrl);
       const forecastData = await forecastResponse.json();
-      
       setWeatherData(forecastData.properties.periods);
     } catch (error) {
-      console.error('Error fetching weather data:', error);
-      setError('Error fetching weather data. Try again later.');
+      setError('Error fetching weather data. Please try again later.');
     }
   };
 
   const handleZipCodeSubmit = async (e) => {
     e.preventDefault();
-    // Assuming you have a mechanism to convert zip code to latitude and longitude or directly to a forecast URL
-    // For the National Weather Service API, you might need an additional step here or use another service for the conversion
+    if (!zipCode || zipCode.trim().length !== 5 || isNaN(zipCode.trim())) {
+      setError('Please enter a valid 5-digit ZIP code.');
+      return;
+    }
 
-    // This is a simplified approach; in a real scenario, you would need to convert the zip code to coordinates first
-    // For demonstration, I'll simulate fetching with geolocation after submitting a zip code
-    // Replace this logic with your actual conversion from zip to coordinates or forecast URL
-    if (zipCode && zipCode.trim().length === 5 && !isNaN(zipCode.trim())) {
-      setError('');
-      // Example coordinates for demonstration, replace with actual conversion logic
-      fetchWeatherData(38.8894, -77.0352); // Placeholder coordinates, replace with actual logic
-    } else {
-      setError('Please enter a valid 5-digit zip code.');
+    try {
+      const response = await fetch(`/api/zip-to-coords?zip=${zipCode}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch coordinates');
+      }
+      const { lat, lon } = await response.json();
+      fetchWeatherDataByCoords(lat, lon);
+      setError(''); // Clear any previous errors
+    } catch (error) {
+      setError(error.message || 'Failed to fetch weather for the provided ZIP code.');
     }
   };
 
   return (
     <div>
       <h2>Weather</h2>
-      {error && <p className="error">{error}</p>}
+      {error && <div>{error}</div>}
       <form onSubmit={handleZipCodeSubmit}>
         <input
           type="text"
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
-          placeholder="Enter zip code"
+          placeholder="Enter ZIP code"
         />
         <button type="submit">Get Weather</button>
       </form>
@@ -68,7 +70,7 @@ const Weather = () => {
           {weatherData.map((period, index) => (
             <li key={index}>
               <strong>{period.name}:</strong> {period.detailedForecast}
-              <WeatherIcon icon={period.icon} /> {/* Ensure WeatherIcon handles the icon appropriately */}
+              <WeatherIcon icon={period.icon} />
             </li>
           ))}
         </ul>

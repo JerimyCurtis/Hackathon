@@ -7,9 +7,9 @@ const News = () => {
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // Fetch Top Headlines on component mount
   useEffect(() => {
     const apiKey = process.env.REACT_APP_APINEWSKEY;
+    // Fetch Top Headlines on component mount
     const topHeadlinesUrls = [
       `https://newsapi.org/v2/top-headlines?country=us&pageSize=${pageSize}&apiKey=${apiKey}`,
       `https://newsapi.org/v2/top-headlines?sources=bbc-news&pageSize=${pageSize}&apiKey=${apiKey}`,
@@ -27,12 +27,10 @@ const News = () => {
     };
 
     fetchTopHeadlines();
-  }, [pageSize]); // Depend on pageSize so it runs if pageSize changes
+  }, [pageSize]);
 
-  // Fetch articles based on search query and date
   useEffect(() => {
-    if (!query) return; // Don't run the search if query is empty
-
+    if (!query) return; // Fetch articles based on search query and date
     const apiKey = process.env.REACT_APP_APINEWSKEY;
     const searchUrl = `https://newsapi.org/v2/everything?q=${query}&from=${fromDate}&sortBy=popularity&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
 
@@ -47,7 +45,7 @@ const News = () => {
     };
 
     fetchArticles();
-  }, [query, fromDate, page, pageSize]); // Depend on query, fromDate, page, and pageSize
+  }, [query, fromDate, page, pageSize]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -55,38 +53,40 @@ const News = () => {
   };
 
   return (
-    <div className="news-container">
-      <h2>News</h2>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search news..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <input
-          type="date"
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
-        {articles.map((article, index) => (
-          <li key={index}>
-            <a href={article.url} target="_blank" rel="noopener noreferrer">
-              {article.title}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div>
-        <button onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))} disabled={page === 1}>
-          Previous
-        </button>
-        <button onClick={() => setPage(prevPage => prevPage + 1)}>
-          Next
-        </button>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="md:flex-1 px-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Top News</h2>
+        <form onSubmit={handleSearch} className="mb-6">
+          <input
+            type="text"
+            placeholder="Search news..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="mr-2 p-2 border border-gray-300 rounded"
+          />
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="mr-2 p-2 border border-gray-300 rounded"
+          />
+          <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+            Search
+          </button>
+        </form>
+        <ul className="space-y-4">
+          {articles.map((article, index) => (
+            <li key={index} className="bg-white shadow overflow-hidden rounded-lg p-6 hover:bg-gray-100">
+              {article.url ? (
+                <a href={article.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 font-semibold">
+                  {article.title}
+                </a>
+              ) : (
+                <span>Article URL not available</span>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

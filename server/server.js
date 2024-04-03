@@ -1,11 +1,27 @@
 const express = require('express');
-const morgan = require('morgan');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
-app.use(morgan('dev'));
-app.use(express.static('dist'));
-app.use(express.static('public'));
-app.use(express.static('img'));
+const port = process.env.PORT || 3000;
 
-module.exports = app;
+// Load ZIP code data from JSON
+const zipCodeData = require('./data/US.json');
+
+// API endpoint for ZIP code lookup
+app.get('/api/zip-to-coords', (req, res) => {
+  const { zip } = req.query;
+  const entry = zipCodeData.find(entry => entry.zip === zip);
+  if (entry) {
+    const coords = { lat: entry.lat, lon: entry.lon };
+    console.log(`Sending coordinates for zip ${zip}:`, coords);
+    res.json(coords);
+  } else {
+    res.status(404).send({ message: 'ZIP code not found.' });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
