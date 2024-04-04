@@ -1,7 +1,6 @@
 import React from 'react';
 
 const WeatherIcon = ({ condition }) => {
-  // Function to map weather condition description to corresponding Weather Icons class
   const getWeatherIconClass = (weatherCondition) => {
     const iconMapping = {
       "Clear": "wi wi-day-sunny",
@@ -12,10 +11,9 @@ const WeatherIcon = ({ condition }) => {
       "Sleet": "wi wi-sleet",
       "Wind": "wi wi-strong-wind",
       "Fog": "wi wi-fog",
-      // Add more mappings as needed
     };
 
-    return iconMapping[weatherCondition] || "wi wi-day-sunny"; // Default icon
+    return iconMapping[weatherCondition] || "wi wi-day-sunny";
   };
 
   const iconClass = getWeatherIconClass(condition);
