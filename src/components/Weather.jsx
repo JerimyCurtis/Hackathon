@@ -70,7 +70,7 @@ const Weather = () => {
           {weatherData.map((period, index) => (
             <li key={index}>
               <strong>{period.name}:</strong> {period.detailedForecast}
-              <WeatherIcon icon={period.icon} />
+              <WeatherIcon condition={period.shortForecast} />
             </li>
           ))}
         </ul>
